@@ -2,7 +2,7 @@
 - hosts: digitalocean
   vars:
     droplets:
-      - droplet-one
+      - k8s-master
   roles:
     - create-droplet
 
