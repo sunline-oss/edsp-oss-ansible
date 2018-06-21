@@ -1,0 +1,26 @@
+DigitalOcean 环境快速部署 k8s 环境的 Ansible 脚本
+
+# 安装  Ansible
+sudo yum install -y ansible
+
+# 更新digitalocean 包
+sudo pip install 'dopy>=0.3.5,<=0.3.5'
+
+# 初始化 key-pair
+ssh-keygen -t rsa -P ''
+cp ~/.ssh/id_rsa.pub ssh_keys/yfb.pub
+cp ~/.ssh/id_rsa ssh_keys/yfb
+
+# 创建单节点 k8s 环境
+ansible-playbook single-create.yml --ask-vault-pass
+ansible-playbook single-k8s.yml --ask-vault-pass
+
+如果hosts和ssh_keys/yfb文件没有加密，则不用加 --ask-vault-pass 选项。
+
+# 创建 k8s 集群环境（1个master、2个node）
+ansible-playbook cluster-create.yml --ask-vault-pass
+ansible-playbook cluster-k8s.yml --ask-vault-pass
+
+如果hosts和ssh_keys/yfb文件没有加密，则不用加 --ask-vault-pass 选项。
+
+

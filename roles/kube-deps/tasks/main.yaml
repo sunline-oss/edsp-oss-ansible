@@ -1,0 +1,40 @@
+---
+- name: Add kubernetes.repo
+  yum_repository:
+    name: Kubernetes
+    description: Kubernetes YUM repo
+    baseurl: https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+    gpgkey: https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    gpgcheck: yes
+    enabled: yes
+  tags:
+    - kube-deps
+
+- name: k8s iptables config
+  template:
+    src: k8s.conf.j2
+    dest: /etc/sysctl.d/k8s.conf
+  tags:
+    - kube-deps
+
+- name: Disable Firewall and Set iptables
+  shell: |
+    setenforce 0
+    sysctl --system
+  tags:
+    - kube-deps
+
+- name: Install kubelet, kubeadm, kubectl
+  yum: name={{ item }} state=present
+  with_items:
+    - kubelet
+    - kubeadm
+    - kubectl
+  tags:
+    - kube-deps
+
+- name: Start Kubelet Service
+  service: name=kubelet state=started enabled=yes
+  tags:
+    - kube-deps
+

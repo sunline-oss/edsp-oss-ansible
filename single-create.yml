@@ -1,0 +1,8 @@
+---
+- hosts: digitalocean
+  vars:
+    droplets:
+      - droplet-one
+  roles:
+    - create-droplet
+
